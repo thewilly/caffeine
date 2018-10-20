@@ -1,0 +1,23 @@
+// Apply the java-library plugin to add support for Java Library
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+version = '1.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    jcenter()
+}
+
+dependencies {
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
