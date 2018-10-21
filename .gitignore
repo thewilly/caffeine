@@ -4,6 +4,8 @@
 /bin/
 target/
 
+!gradle/wrapper/gradle-wrapper.jar
+
 # OS Files #
 .DS_Store
 
