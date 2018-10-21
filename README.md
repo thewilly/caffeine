@@ -11,19 +11,19 @@
 Caffeine is a java cache library to increase the performance of web based services.
 
 ```java
-    GenericCache<String> cache = new GenericCacheImpl<String>();
-    cache.save( "sadf", "Hola me llamo thewilly", 2000, () -> { System.err.println( "Goodbie" ); } );
+GenericCache<String> cache = new GenericCacheImpl<String>();
+cache.save( "sadf", "Hola me llamo thewilly", 2000, () -> { System.err.println( "Goodbie" ); } );
 
-    System.out.println(cache);
-    // Will print the sadf record;
+System.out.println(cache);
+// Will print the sadf record;
 
-    String record = cacge.get( "sadf" ); // record = Hola me llamo thewilly
+String record = cacge.get( "sadf" ); // record = Hola me llamo thewilly
 
-    // Wait for 2000 ms.
-    // Will print Goodbie.
+// Wait for 2000 ms.
+// Will print Goodbie.
 
-    System.out.println(cache);
-    // Will print nothing as it is empty.
+System.out.println(cache);
+// Will print nothing as it is empty.
 
-    record = cacge.get( "sadf" ); // record = null
+record = cacge.get( "sadf" ); // record = null
 ```
