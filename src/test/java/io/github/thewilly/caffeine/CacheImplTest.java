@@ -41,12 +41,12 @@ public class CacheImplTest {
 	public void test() {
 		cache.save( "sadf", "Hola me llamo guillermo", 2000, () -> { System.err.println( "Goodbie" ); } );
 		
-		while(true) {
-			System.out.println(cache.toString());
-			
+		assertEquals( "Hola me llamo guillermo", cache.get( "sadf" ) );
+		
+		while(cache.get( "sadf" ) != null) {
+			System.out.println("Waiting...");
 		}
-	}
-	
-    
-    
+		
+		assertEquals( null, cache.get( "sadf" ) );
+	} 
 }

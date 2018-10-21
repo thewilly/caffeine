@@ -24,6 +24,8 @@ package io.github.thewilly.caffeine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The Class CacheImpl.
@@ -50,7 +52,7 @@ public class CacheImpl {
 	 * @param value the value
 	 */
 	public void save(String key, Object value) {
-		this.memmoryTable.put( key, new CacheRecord( key, value, -1, null, this ) );
+		this.memmoryTable.put( key, new CacheRecord( value, -1, null ) );
 	}
 	
 	/**
@@ -62,7 +64,18 @@ public class CacheImpl {
 	 * @param onRemoveFunction the on remove function
 	 */
 	public void save(String key, Object value, long ttl, Runnable onRemoveFunction) {
-		this.memmoryTable.put( key, new CacheRecord( key, value, ttl, onRemoveFunction, this ) );
+		this.memmoryTable.put( key, new CacheRecord(value, ttl, onRemoveFunction ) );
+		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor( 4 );
+		executor.schedule(
+				new Runnable() {
+
+					@Override
+					public void run() {
+						memmoryTable.remove( key );
+						onRemoveFunction.run();
+					}
+
+				}, ttl, TimeUnit.MILLISECONDS );
 	}
 	
 	/**
@@ -72,11 +85,7 @@ public class CacheImpl {
 	 * @return the object
 	 */
 	public Object get( String key ) {
-		return this.memmoryTable.get( key ).getContent();
-	}
-	
-	protected void remove(CacheRecord cr) {
-		this.memmoryTable.remove( cr.key );
+		return this.memmoryTable.get( key ) != null ? this.memmoryTable.get( key ).getContent() : null;
 	}
 	
 	/* (non-Javadoc)
