@@ -6,7 +6,7 @@
 
 || **Architecture** | **Status** |
 |:------:|:-:|:----------:|
-|** Ubuntu Trusty 14.04**|x86_64|[![Build Status](https://travis-ci.org/thewilly/caffeine.svg?branch=master)](https://travis-ci.org/thewilly/caffeine)|
+|**Ubuntu Trusty 14.04**|x86_64|[![Build Status](https://travis-ci.org/thewilly/caffeine.svg?branch=master)](https://travis-ci.org/thewilly/caffeine)|
 
 ### What's caffeine?
 Caffeine is a java cache library to increase the performance of web based services.
