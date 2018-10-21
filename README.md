@@ -1,6 +1,7 @@
 <!-- <img src="/docs/cup-coffe.png" align="right" />-->
 
-# Welcome to caffeine!
+# Welcome to caffeine! [![](https://jitpack.io/v/thewilly/caffeine.svg)](https://jitpack.io/#thewilly/caffeine)
+
 
 
 || **Architecture** | **Status** |
