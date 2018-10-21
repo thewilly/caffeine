@@ -1,4 +1,4 @@
-<img src="/docs/cup-coffe.png" align="right" />
+<!-- <img src="/docs/cup-coffe.png" align="right" />-->
 
 # Welcome to caffeine!
 
