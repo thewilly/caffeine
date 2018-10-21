@@ -27,32 +27,60 @@ package io.github.thewilly.caffeine;
  *
  * @author Guillermo Facundo Colunga
  * @version 201806081225
+ * @param <T> the generic type
  */
-public interface Cache {
-	
-	/**
-	 * Save.
-	 *
-	 * @param content the content
-	 */
-	public void save(CacheRecord content);
-	
+public interface GenericCache<T> {
+
 	/**
 	 * Contain.
 	 *
 	 * @param key the key
 	 * @return true, if successful
 	 */
-	public boolean contain(String key);
-	
+	public boolean contains( String key );
+
 	/**
 	 * Gets the.
 	 *
 	 * @param key the key
 	 * @return the cache record
 	 */
-	public CacheRecord get(String key);
-	
-	void remove(CacheRecord cacheRecord);
+	public T get( String key );
+
+	/**
+	 * Checks if is empty.
+	 *
+	 * @return true, if is empty
+	 */
+	public boolean isEmpty();
+
+	/**
+	 * Removes the.
+	 *
+	 * @param key the key
+	 */
+	public void remove( String key );
+
+	/**
+	 * Removes the all.
+	 */
+	public void removeAll();
+
+	/**
+	 * Save.
+	 *
+	 * @param key the key
+	 * @param content the content
+	 * @param ttl the ttl
+	 * @param onRemoveFunction the on remove function
+	 */
+	public void save( String key, T content, long ttl, Runnable onRemoveFunction );
+
+	/**
+	 * Size.
+	 *
+	 * @return the long
+	 */
+	public long size();
 
 }

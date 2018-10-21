@@ -22,70 +22,120 @@
  */
 package io.github.thewilly.caffeine;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The Class CacheImpl.
  *
  * @author Guillermo Facundo Colunga
  * @version 201806081225
+ * @param <T> the generic type
  */
-public class GenericCacheImpl<T> {
-	
+public class GenericCacheImpl<T> implements GenericCache<T> {
+
 	/** The memmory table. */
-	private Map<String, GenericCacheRecord<T>> memmoryTable;
-	
+	private ConcurrentMap<String, GenericCacheRecord<T>> memmoryTable;
+
 	/**
 	 * Instantiates a new cache impl.
 	 */
 	public GenericCacheImpl() {
-		this.memmoryTable = new HashMap<String, GenericCacheRecord<T>>();
+		this.memmoryTable = new ConcurrentHashMap<String, GenericCacheRecord<T>>();
 	}
-	
-	/**
-	 * Save.
-	 *
-	 * @param key the key
-	 * @param value the value
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#contains(java.lang.String)
 	 */
-	public void save(String key, T value) {
-		this.memmoryTable.put( key, new GenericCacheRecord<T>( value, -1, null ) );
+	@Override
+	public boolean contains( String key ) {
+		return this.get( key ) != null;
 	}
-	
-	/**
-	 * Save.
-	 *
-	 * @param key the key
-	 * @param value the value
-	 * @param ttl the ttl
-	 * @param onRemoveFunction the on remove function
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#get(java.lang.String)
 	 */
-	public void save(String key, T value, long ttl, Runnable onRemoveFunction) {
-		this.memmoryTable.put( key, new GenericCacheRecord<T>( value, ttl, onRemoveFunction ) );
-	}
-	
-	/**
-	 * Gets the.
-	 *
-	 * @param key the key
-	 * @return the object
-	 */
+	@Override
 	public T get( String key ) {
-		return this.memmoryTable.get( key ).getContent();
+		return this.memmoryTable.get( key ) != null ? this.memmoryTable.get( key ).getContent()
+				: null;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#isEmpty()
+	 */
+	@Override
+	public boolean isEmpty() {
+		return this.memmoryTable.isEmpty();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#remove(java.lang.String)
+	 */
+	@Override
+	public void remove( String key ) {
+		this.memmoryTable.remove( key );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#removeAll()
+	 */
+	@Override
+	public void removeAll() {
+		this.memmoryTable = new ConcurrentHashMap<String, GenericCacheRecord<T>>();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#save(java.lang.String,
+	 * java.lang.Object, long, java.lang.Runnable)
+	 */
+	@Override
+	public void save( String key, T content, long ttl, Runnable onRemoveFunction ) {
+		this.memmoryTable.put( key, new GenericCacheRecord<T>( content, ttl, onRemoveFunction ) );
+		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor( 4 );
+		executor.schedule(
+				new Runnable() {
+
+					@Override
+					public void run() {
+						memmoryTable.remove( key );
+
+						if (onRemoveFunction != null)
+							onRemoveFunction.run();
+					}
+
+				}, ttl, TimeUnit.MILLISECONDS );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.github.thewilly.caffeine.GenericCache#size()
+	 */
+	@Override
+	public long size() {
+		return this.memmoryTable.size();
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
-		for(GenericCacheRecord<T> cr : memmoryTable.values()) {
+
+		for (GenericCacheRecord<T> cr : memmoryTable.values()) {
 			sb.append( cr.toString() );
 		}
-		
+
 		return sb.toString();
 	}
 
